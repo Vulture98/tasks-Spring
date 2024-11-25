@@ -1,60 +1,41 @@
 package com.featuring.tasks.firstProject.controller;
 
 import com.featuring.tasks.firstProject.entity.User;
-import com.featuring.tasks.firstProject.repository.UserRepository;
+import com.featuring.tasks.firstProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    @GetMapping("/all")
-    public List<User> getAllTasks() {
-        List<User> allTasks = userRepository.findAll();
-        return allTasks;
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
-    @PostMapping("/create")
-    public User createTask(@RequestBody User user) {
-        User saved = userRepository.save(user);
-        return saved;
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 
-    @GetMapping("/id/{id}")
-    public User getTask(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .orElse(null);  // Better to throw a proper exception here
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    @DeleteMapping("/id/{id}")
-    public String deleteTask(@PathVariable Long id) {
-        Optional<User> found = userRepository.findById(id);
-        if (found.isPresent()) {
-            System.out.println("isPresent()");
-            userRepository.deleteById(id);
-        } else {
-            return "user not found";
-        }
-        return "deleted";
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
-    @PutMapping("/id/{id}")
-    public String updateTask(@PathVariable Long id, @RequestBody User user) {
-        return userRepository.findById(id)
-                .map(existingTask -> {
-                    existingTask.setName(user.getName());
-                    existingTask.setEmail(user.getEmail());
-                    existingTask.setPassword(user.getPassword());
-                    userRepository.save(existingTask);
-                    return "updated";
-                })
-                .orElse("user not found");
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
     }
 }
