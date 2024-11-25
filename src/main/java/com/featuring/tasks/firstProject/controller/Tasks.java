@@ -1,18 +1,25 @@
 package com.featuring.tasks.firstProject.controller;
 
+import com.featuring.tasks.firstProject.entity.User;
+import com.featuring.tasks.firstProject.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tasks")
 public class Tasks {
 
-    @GetMapping("/")
-    public String getALlTasks() {
-        return "OK getALlTasks()";
+    @Autowired
+    private UserRepository userRepository;
+
+    @GetMapping("/all")
+    public String getAllTasks() {
+        return "OK getAllTasks()";
     }
 
-    @PostMapping("/")
-    public String createTask() {
+    @PostMapping("/create")
+    public String createTask(@RequestBody User user) {
+        userRepository.save(user);
         return "OK createTask()";
     }
 
