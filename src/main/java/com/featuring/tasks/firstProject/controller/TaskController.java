@@ -30,14 +30,17 @@ public class TaskController {
 
     @GetMapping("/id/{id}")
     public TaskEntry getTask(@PathVariable Long id) {
-        Optional<TaskEntry> task = taskRepository.findById(id);
-        if (task.isPresent()) {
-            System.out.println("isPresent()");
-            return task.get();
-        } else {
-            System.out.println("task not found");
-        }
-        return null;
+        return taskRepository.findById(id)
+                .orElse(null);  // Better to throw a proper exception here
+//       NEVER USE get() directly
+//        Optional<TaskEntry> task = taskRepository.findById(id);
+//        if (task.isPresent()) {
+//            System.out.println("isPresent()");
+//            return task.get();
+//        } else {
+//            System.out.println("task not found");
+//        }
+//        return null;
     }
 
     @DeleteMapping("/id/{id}")
@@ -46,7 +49,7 @@ public class TaskController {
         if (found.isPresent()) {
             System.out.println("isPresent()");
             taskRepository.deleteById(id);
-        } else{
+        } else {
             return "task not found";
         }
         return "deleted";
@@ -54,21 +57,15 @@ public class TaskController {
 
     @PutMapping("/id/{id}")
     public String updateTask(@PathVariable Long id, @RequestBody TaskEntry task) {
-        Optional<TaskEntry> found = taskRepository.findById(id);
-        System.out.println("found: " + found);
-        if (found.isPresent()) {
-            TaskEntry existingTask = found.get();
-
-            existingTask.setTitle(task.getTitle());
-            existingTask.setDescription(task.getDescription());
-            existingTask.setStatus(task.getStatus());
-            existingTask.setPriority(task.getPriority());
-
-            taskRepository.save(existingTask);
-
-            return "updated";
-        } else {
-            return "task not found";
-        }
+        return taskRepository.findById(id)
+                .map(existingTask -> {
+                    existingTask.setDescription(task.getDescription());
+                    existingTask.setTitle(task.getTitle());
+                    existingTask.setStatus(task.getStatus());
+                    existingTask.setPriority(task.getPriority());
+                    taskRepository.save(existingTask);
+                    return "updated";
+                })
+                .orElse("task not found");
     }
 }
