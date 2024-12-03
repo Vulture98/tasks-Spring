@@ -82,7 +82,14 @@ DELETE /tasks/id/{id}
 
 1. Clone the repository
 2. Make sure you have Java 17 and Maven installed
-3. Navigate to the project directory
+3. Set up PostgreSQL database:
+   - Create a database named `projects`
+   - Create `application-local.properties` in `src/main/resources/` with your database credentials:
+     ```properties
+     spring.datasource.username=your_postgres_username
+     spring.datasource.password=your_postgres_password
+     ```
+   Note: This file is gitignored and won't be committed to ensure security
 4. Run the application:
    ```bash
    mvn spring-boot:run
@@ -91,11 +98,14 @@ DELETE /tasks/id/{id}
 
 ## Configuration
 
-The application can be configured through `src/main/resources/application.properties`. Key configurations include:
+The application can be configured through:
+1. `src/main/resources/application.properties` - Main configuration file
+2. `src/main/resources/application-local.properties` - Local database credentials (not committed to Git)
 
-- Database connection details
-- Server port
-- Logging levels
+For production deployment, set the following environment variables:
+- `DB_URL` - Database URL (default: jdbc:postgresql://localhost:5432/projects)
+- `DB_USERNAME` - Database username
+- `DB_PASSWORD` - Database password
 
 ## Future Enhancements
 
