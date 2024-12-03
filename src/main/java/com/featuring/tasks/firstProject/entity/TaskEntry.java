@@ -1,0 +1,19 @@
+package com.featuring.tasks.firstProject.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name = "tasks")
+public class TaskEntry {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String description;
+    private String status;
+    private String priority;
+
+}
